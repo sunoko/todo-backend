@@ -7,9 +7,25 @@ class TodosController < ApplicationController
     render json: @todos
   end
 
+  # GET /todos/:id
   def show
     @todo = Todo.find(params[:id])
 
     render json: @todo
+  end
+
+  # POST /todos
+  def create
+    @todo = Todo.new(todo_params)
+
+    if @todo.save
+      render json: @todo, status: :created, location: @todo
+    else
+      render json: @todo.errors, status: :unprocessable_entity
+    end
+  end
+
+  def todo_params
+    params.require(:todo).permit(:title, :content)
   end
 end
